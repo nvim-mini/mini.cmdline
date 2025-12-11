@@ -205,6 +205,8 @@ Notes:
   the lowest string distance.
   See |MiniCmdline.default_autocorrect_func()| for details.
 
+- Word that matches some Command-line |abbreviation| is not autocorrected.
+
 - If current command expects only a single argument (like |:colorscheme|), then
   autocorrection will happen only just before executing the command.
 

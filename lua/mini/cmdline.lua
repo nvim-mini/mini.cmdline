@@ -179,6 +179,8 @@ end
 ---   the lowest string distance.
 ---   See |MiniCmdline.default_autocorrect_func()| for details.
 ---
+--- - Word that matches some Command-line |abbreviation| is not autocorrected.
+---
 --- - If current command expects only a single argument (like |:colorscheme|), then
 ---   autocorrection will happen only just before executing the command.
 ---
@@ -738,7 +740,7 @@ H.autocorrect = function(is_final)
   -- Compute autocorrection
   local state_to_use = is_final and state or state_prev
   local word = state_to_use.complpat
-  if word == '' then return end
+  if word == '' or vim.fn.maparg(word, 'c', true) ~= '' then return end
 
   local func = H.cache.config.autocorrect.func or MiniCmdline.default_autocorrect_func
   local new_word = func({ word = word, type = state_to_use.compltype }) or word
