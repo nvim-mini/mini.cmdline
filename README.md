@@ -21,7 +21,7 @@ If you want to help this project grow but don't know where to start, check out [
 ## Demo
 
 <!-- Demo source: https://github.com/nvim-mini/assets/blob/main/demo/demo-cmdline.mp4 -->
-https://github.com/user-attachments/assets/7395e06c-d535-4911-ab53-164a1497d09a
+https://github.com/user-attachments/assets/9d3e12ac-ff17-4bdb-bbe8-3010c966c110
 
 ## Features
 
