@@ -12,7 +12,7 @@ See more details in [Features](#features) and [Documentation](doc/mini-cmdline.t
 
 ⦿ See [whole library documentation](https://nvim-mini.org/mini.nvim/doc/mini-nvim) to learn about general design principles, disable/configuration recipes, and more.
 
-<!-- ⦿ See [MiniMax](https://nvim-mini.org/MiniMax) for a full config example that uses this module. -->
+⦿ See [MiniMax](https://nvim-mini.org/MiniMax) for a full config example that uses this module.
 
 ---
 
