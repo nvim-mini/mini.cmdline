@@ -678,7 +678,7 @@ H.adjust_option_cmd_state = function(state)
   -- and try to expand complpat to match the whole word on cursor's left.
   if state.compltype == 'option' then return end
   state.complpat = state.line:sub(1, state.pos - 1):match(' (%w+)$') or ''
-  state.compltype = state.complpat ~= nil and 'option' or state.compltype
+  state.compltype = state.complpat ~= '' and 'option' or state.compltype
 end
 
 -- Autocomplete ---------------------------------------------------------------
