@@ -159,9 +159,9 @@ end
 ---# Autocorrect ~
 ---
 --- `config.autocorrect` is used to configure autocorrection: automatic adjustment
---- of bad words as you type them. This works only when appending text at the end
---- of the command line. Editing already typed words does not trigger autocorrect
---- (allows correcting the autocorrection).
+--- of bad words as you type them. This works only when appending single character
+--- at the end of the command line. Editing already typed words does not trigger
+--- autocorrect (allows correcting the autocorrection).
 ---
 --- When to autocorrect is computed automatically based on |getcmdcomplpat()| after
 --- every key press: if it doesn't add the character to completion pattern, then
@@ -759,13 +759,14 @@ H.autocorrect = function(is_final)
   local line, line_prev = state.line, state_prev.line
   local pos, pos_prev = state.pos, state_prev.pos
 
-  -- Act only when text is appended. It makes it natural to tweak autocorrected
-  -- text by going back and editing it. This is also easier to implement.
+  -- Act only when a char is appended. It makes tweaking autocorrected text
+  -- easier by going back and editing it. This is also easier to implement.
   local is_at_end, was_at_end = (pos - 1) == line:len(), (pos_prev - 1) == line_prev:len()
-  local is_text_append = vim.startswith(line, line_prev) and is_at_end and was_at_end
+  local new = line:sub(pos_prev)
+  local is_char_append = is_at_end and was_at_end and line == (line_prev .. new) and vim.fn.strchars(new) <= 1
   local is_word_finished = not vim.startswith(state.complpat, state_prev.complpat)
 
-  if not (is_text_append and (is_word_finished or is_final)) then return end
+  if not (is_char_append and (is_word_finished or is_final)) then return end
 
   -- Compute autocorrection
   local state_to_use = is_final and state or state_prev
