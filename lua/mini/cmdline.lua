@@ -454,12 +454,16 @@ H.can_autocomplete = vim.fn.has('nvim-0.11') == 1
 --   creating a new object. Like `:edit new-file` for `file` type.
 -- - No `help` because there already is an autocorrection with a "sophisticated
 --   algorithm to decide which match is better than another one".
+-- - No `buffer` because completion candidates only include names for listed
+--   buffers. So ids of listed buffers and name+ids of unlisted buffers are
+--   missing. Also, partial buffer name is enough for `:buffer`, which would
+--   be too cumbersome to account for.
 --stylua: ignore
 H.autocorrect_strict_types = {
   arglist       = true, -- file names in argument list
   -- augroup       = true, -- autocmd groups
   -- breakpoint    = true, -- |:breakadd| suboptions
-  buffer        = true, -- buffer names
+  -- buffer        = true, -- buffer names
   color         = true, -- color schemes
   command       = true, -- Ex command (and arguments)
   compiler      = true, -- compilers
