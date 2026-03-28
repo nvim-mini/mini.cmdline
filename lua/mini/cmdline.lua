@@ -571,12 +571,14 @@ H.create_autocommands = function()
   -- Act on command line events. Notes:
   -- - Schedule for 'CmdlineEnter' to not act on mappings like `:...`
   --   (like `:<C-u>...` popular for Visual mode).
-  -- - Schedule for 'CmdlineChanged' to work around autcompletion issues with
-  --   mocking wildchar.
+  -- - Prefer 'CursorMovedC' to track command line change as it is triggered
+  --   both after only position change and after text change. Schedule its
+  --   callback to work around autcompletion issues with mocking wildchar.
   -- - Do not schedule 'CmdlineLeave' to be able to set command text before
   --   executing it.
   au('CmdlineEnter', '*', vim.schedule_wrap(H.on_cmdline_enter), 'Act on command line enter')
-  au('CmdlineChanged', '*', vim.schedule_wrap(H.on_cmdline_changed), 'Act on command line change')
+  local update_event = vim.fn.has('nvim-0.11') == 1 and 'CursorMovedC' or 'CmdlineChanged'
+  au(update_event, '*', vim.schedule_wrap(H.on_cmdline_update), 'Act on command line update')
   au('CmdlineLeave', '*', H.on_cmdline_leave, 'Act on command line leave')
 
   au('VimResized', '*', function() H.autopeek(true) end, 'Adjust peek window')
@@ -635,17 +637,20 @@ H.on_cmdline_enter = function()
   if H.cache.config.autopeek.enable then H.autopeek() end
 end
 
-H.on_cmdline_changed = function()
+H.on_cmdline_update = function()
   if H.cache.state == nil or H.cache.n_nested ~= nil then return end
 
-  -- Act only on actual line change
+  -- Track state only if there was an actual change (line or position)
   local state = H.get_cmd_state()
-  if state.line == H.cache.state.line then return end
+  local is_same_line = state.line == H.cache.state.line
+  if is_same_line and state.pos == H.cache.state.pos then return end
 
   -- Update state accounting for some edge cases
   if H.cache.state_prev.compltype == 'option' then H.adjust_option_cmd_state(state) end
   H.cache.state_prev, H.cache.state = H.cache.state, state
 
+  -- Act only on text change
+  if is_same_line then return end
   local config = H.cache.config
   if config.autocomplete.enable and H.can_autocomplete then H.autocomplete() end
   if config.autocorrect.enable then H.autocorrect(false) end
